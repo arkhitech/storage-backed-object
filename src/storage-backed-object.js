@@ -5,7 +5,7 @@
 // Means each can be edited without re-saving the entire object
 // So is useful for larger structures.
 // Object + keys is is the same instance for the lifetime of the StorageBackedObject
-angular.module('tillApp')
+angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
 .factory('StorageBackedObject', function (storage, _) {
 
   function StorageBackedObject(rootKey, storage) {
