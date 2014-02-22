@@ -8,6 +8,8 @@
 angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
 .factory('StorageBackedObject', function (storage, _) {
 
+  var sbObjects = [];
+
   function StorageBackedObject(rootKey, storage) {
     this.rootKey = rootKey;
     this.storage = storage;
@@ -93,7 +95,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
   };
 
   return function(rootKey) {
-    return new StorageBackedObject(rootKey, storage);
+    return sbObjects[rootKey] || (sbObjects[rootKey] = new StorageBackedObject(rootKey, storage));
   };
 });
 

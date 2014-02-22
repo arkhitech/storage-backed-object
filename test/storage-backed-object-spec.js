@@ -19,66 +19,82 @@ describe('StorageBackedObject', function () {
 
   beforeEach(function() {
     rootKey = 'test-root-key';
-    testKey = 'test-key';
-    testKeyWithNoValue = 'not-assigned-a-value';
-    testValueObject = {}; 
   });
 
-  beforeEach(function () {
-    sbObject = StorageBackedObject(rootKey);
-  });
+  describe('returned object', function() {
+    var sbObject1, sbObject2;
 
-  describe('set', function() {
     beforeEach(function() {
-      spyOn(storage, 'set');
-      sbObject.set(testKey, testValueObject);
+      sbObject1 = StorageBackedObject(rootKey);
+      sbObject2 = StorageBackedObject(rootKey);
     })
 
-    it('should call storage.set with ' + html5key(rootKey, testKey), function() {
-      expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),testValueObject);
+    it('must be the same instance for each factory call', function() {
+      expect(sbObject1 === sbObject2).toBe(true);
     });
   });
 
-  describe('get', function() {
-    beforeEach(function() {
-      spyOn(storage,'get').andCallThrough();
-      sbObject.set(testKey, testValueObject);
+  describe('function', function() {
+    beforeEach(function () {
+      testKey = 'test-key';
+      testKeyWithNoValue = 'not-assigned-a-value';
+      testValueObject = {}; 
+      sbObject = StorageBackedObject(rootKey);
+    });
+
+    describe('set', function() {
+      beforeEach(function() {
+        spyOn(storage, 'set');
+        sbObject.set(testKey, testValueObject);
+      })
+
+      it('should call storage.set with ' + html5key(rootKey, testKey), function() {
+        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),testValueObject);
+      });
+    });
+
+    describe('get', function() {
+      beforeEach(function() {
+        spyOn(storage,'get').andCallThrough();
+        sbObject.set(testKey, testValueObject);
+      })
+
+      it('should return what was passed to set', function() {
+        expect(sbObject.get(testKey)).toEqual(testValueObject);
+      });
+
+      it('should return the same object after successive calls to get', function() {
+        var first = sbObject.get(testKey);
+        var second = sbObject.get(testKey);
+        expect(first === second).toBe(true);
+      });
+
+      it('should throw an exception if getting a non-existant key', function() {
+        expect(function() {
+          sbObject.get(testKeyWithNoValue);
+        }).toThrow();
+      });
     })
 
-    it('should return what was passed to set', function() {
-      expect(sbObject.get(testKey)).toEqual(testValueObject);
+    describe('remove', function() {
+      beforeEach(function() {
+        spyOn(storage,'remove').andCallThrough();
+      })
+
+      it('should call storage.remove with ' + html5key(rootKey, testKey), function() {
+        sbObject.remove(testKey);
+        expect(storage.remove).toHaveBeenCalledWith(html5key(rootKey, testKey));
+      });
+
+      it('should cause subsequent calls to get to throw an exception', function() {
+        sbObject.set(testKey, testValueObject);
+        sbObject.remove(testKey);
+        expect(function() {
+          sbObject.get(testKey);
+        }).toThrow();
+      });
     });
 
-    it('should return the same object after successive calls to get', function() {
-      var first = sbObject.get(testKey);
-      var second = sbObject.get(testKey);
-      expect(first).toEqual(second);
-    });
-
-    it('should throw an exception if getting a non-existant key', function() {
-      expect(function() {
-        sbObject.get(testKeyWithNoValue);
-      }).toThrow();
-    });
-  })
-
-  describe('remove', function() {
-    beforeEach(function() {
-      spyOn(storage,'remove').andCallThrough();
-    })
-
-    it('should call storage.remove with ' + html5key(rootKey, testKey), function() {
-      sbObject.remove(testKey);
-      expect(storage.remove).toHaveBeenCalledWith(html5key(rootKey, testKey));
-    });
-
-    it('should cause subsequent calls to get to throw an exception', function() {
-      sbObject.set(testKey, testValueObject);
-      sbObject.remove(testKey);
-      expect(function() {
-        sbObject.get(testKey);
-      }).toThrow();
-    });
   });
 
 });
