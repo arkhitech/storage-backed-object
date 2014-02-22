@@ -5,7 +5,7 @@
 // Means each can be edited without re-saving the entire object
 // So is useful for larger structures.
 // Object + keys is is the same instance for the lifetime of the StorageBackedObject
-angular.module('tillApp')
+angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
 .factory('StorageBackedObject', function (storage, _) {
 
   function StorageBackedObject(rootKey, storage) {
@@ -30,14 +30,6 @@ angular.module('tillApp')
       this.keys.push(key);
       this.saveKeys();
     }
-
-    // Save properties with _ 
-    // Make a copy of the object, and remove all properties starting with '_'
-    //if (_.isObject(value)) {
-    //  value = _.omit(value, function(objValue, key) {
-    //    return (key.charAt(0) == '_');
-    //  });
-    //};
 
     this.storage.set(storageKey, value);
   };
@@ -79,7 +71,8 @@ angular.module('tillApp')
   };
 
   StorageBackedObject.prototype.get = function(key) {
-    return this.object[key];
+    if (this.object.hasOwnProperty(key)) return this.object[key];
+    throw 'StorageBackedObject ' + this.rootKey + ' does not have property ' + key;
   };
   StorageBackedObject.prototype.getMany = function(keys) {
     var values = {};

@@ -16,6 +16,16 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.13"
+    "angular": "~1.2.13",
+    "angularLocalStorage": "~0.1.7",
+    "angular-cookies": "~1.2.13",
+    "lodash": "~2.4.1",
+    "angular-lo-dash": "intelligentgolf/angular-lo-dash#~0.0.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.13"
+  },
+  "resolutions": {
+    "angular": "1.2.13"
   }
 }
