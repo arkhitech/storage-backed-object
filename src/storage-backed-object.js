@@ -31,14 +31,6 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
       this.saveKeys();
     }
 
-    // Save properties with _ 
-    // Make a copy of the object, and remove all properties starting with '_'
-    //if (_.isObject(value)) {
-    //  value = _.omit(value, function(objValue, key) {
-    //    return (key.charAt(0) == '_');
-    //  });
-    //};
-
     this.storage.set(storageKey, value);
   };
 
