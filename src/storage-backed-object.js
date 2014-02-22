@@ -8,6 +8,8 @@
 angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
 .factory('StorageBackedObject', function (storage, _) {
 
+  var sbObjects = [];
+
   function StorageBackedObject(rootKey, storage) {
     this.rootKey = rootKey;
     this.storage = storage;
@@ -70,8 +72,12 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
     this.removeItemFromStorage(key);
   };
 
-  StorageBackedObject.prototype.get = function(key) {
+  StorageBackedObject.prototype.get = function(key, defaultValue) {
     if (this.object.hasOwnProperty(key)) return this.object[key];
+    if (undefined != defaultValue) {
+      this.set(key, defaultValue);
+      return defaultValue;
+    }
     throw 'StorageBackedObject ' + this.rootKey + ' does not have property ' + key;
   };
   StorageBackedObject.prototype.getMany = function(keys) {
@@ -93,7 +99,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
   };
 
   return function(rootKey) {
-    return new StorageBackedObject(rootKey, storage);
+    return sbObjects[rootKey] || (sbObjects[rootKey] = new StorageBackedObject(rootKey, storage));
   };
 });
 
