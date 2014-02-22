@@ -59,6 +59,10 @@ describe('StorageBackedObject', function () {
         sbObject.set(testKey, testValueObject);
       })
 
+      afterEach(function() {
+        sbObject.remove(testKeyWithNoValue);
+      });
+
       it('should return what was passed to set', function() {
         expect(sbObject.get(testKey)).toEqual(testValueObject);
       });
