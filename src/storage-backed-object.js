@@ -71,7 +71,8 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
   };
 
   StorageBackedObject.prototype.get = function(key) {
-    return this.object[key];
+    if (this.object.hasOwnProperty(key)) return this.object[key];
+    throw 'StorageBackedObject ' + this.rootKey + ' does not have property ' + key;
   };
   StorageBackedObject.prototype.getMany = function(keys) {
     var values = {};
