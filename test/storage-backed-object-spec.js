@@ -74,6 +74,14 @@ describe('StorageBackedObject', function () {
           sbObject.get(testKeyWithNoValue);
         }).toThrow();
       });
+
+      it('should retrieve and store the default value if passed', function() {
+        var retrieved1 = sbObject.get(testKeyWithNoValue, testValueObject);
+        expect(retrieved1).toEqual(testValueObject);
+
+        var retrieved2 = sbObject.get(testKeyWithNoValue);
+        expect(retrieved2).toEqual(testValueObject);
+      });
     })
 
     describe('remove', function() {
