@@ -5,19 +5,28 @@ Simple AngularJS service to store an object of key/values in HTML5 storage. This
 
 Usage
 -----
-   
-    // Create the object
-    var users = StorageBackedObject('users');
+
+Add the dependency to your AngularJS app:
+
+    // Add module dependency 
+    angular.module('myApp', ['storage-backed-object']);
     
-    // Store an item by key
-    users.set(1234, {name: 'John Smith'})
+Then use it by injecting `StorageBackedObject` into your services:
+       
+    angular.service('MyService', function(StorageBackedObject) {
+      // Create the object
+      var users = StorageBackedObject('users');
     
-    // Fetch an item by key
-    var user = users.get('1234');
+      // Store an item by key
+      users.set(1234, {name: 'John Smith'})
     
-    // Remove an item by key
-    users.remove(1234);
+      // Fetch an item by key
+      var user = users.get('1234');
     
+      // Remove an item by key
+      users.remove(1234);
+    });    
+  
 
 Properties
 ----------
