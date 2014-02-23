@@ -10,92 +10,87 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
 
   var sbObjects = [];
 
-  function StorageBackedObject(rootKey, storage) {
-    this.rootKey = rootKey;
-    this.storage = storage;
-    this.keys = storage.get(rootKey) || [];
-    this.object = {};
-    this.populateObject();
-  };
+  function StorageBackedObject(rootKey_, storage_) {
+    /* Private properties */
 
-  StorageBackedObject.prototype.getStorageKeyForKey = function(key) {
-    return this.rootKey + '---VALUES---' + key;
-  };
+    var rootKey = rootKey_;
+    var storage = storage_;
 
-  StorageBackedObject.prototype.saveKeys = function() {
-    this.storage.set(this.rootKey, this.keys);
-  };
+    var keys = storage.get(rootKey) || [];
+    var object = {};
 
-  StorageBackedObject.prototype.saveItemToStorage = function(key, value) {
-    var storageKey = this.getStorageKeyForKey(key);
-    if (this.keys.indexOf(key) === -1) {
-      this.keys.push(key);
-      this.saveKeys();
-    }
+    /* Private methods */
 
-    this.storage.set(storageKey, value);
-  };
+    var getStorageKeyForKey = function(key) {
+      return rootKey + '---VALUES---' + key;
+    };
 
-  StorageBackedObject.prototype.removeItemFromStorage = function(key) {
-    var storageKey = this.getStorageKeyForKey(key);
-    this.storage.remove(storageKey);
-  };
+    var saveKeys = function() {
+      storage.set(rootKey, keys);
+    };
 
-  StorageBackedObject.prototype.getItemFromStorage = function(key) {
-    var storageKey = this.getStorageKeyForKey(key);
-    var item = this.storage.get(storageKey);
-    return item;
-  };
+    var saveItemToStorage = function(key, value) {
+      var storageKey = getStorageKeyForKey(key);
+      if (-1 === keys.indexOf(key)) {
+        keys.push(key);
+        saveKeys();
+      }
 
-  StorageBackedObject.prototype.populateObject = function() {
-    var self = this;
-    angular.forEach(self.keys, function(key) {
-      var item = self.getItemFromStorage(key);
-      self.object[key] = item;
-    });
-  };
+      storage.set(storageKey, value);
+    };
 
-  /* Public Methods */
-  StorageBackedObject.prototype.set = function(key, value) {
-    this.object[key] = value;
-    this.saveItemToStorage(key, value);
-    this.saveKeys();
-  };
+    var removeItemFromStorage = function(key) {
+      var storageKey = getStorageKeyForKey(key);
+      storage.remove(storageKey);
+    };
 
-  StorageBackedObject.prototype.remove = function(key) {
-    delete this.object[key];
-    var index = this.keys.indexOf(key);
-    if (index != -1) {
-      this.keys.splice(index, 1);
-      this.saveKeys();
-    }
-    this.removeItemFromStorage(key);
-  };
+    var getItemFromStorage = function(key) {
+      var storageKey = getStorageKeyForKey(key);
+      var item = storage.get(storageKey);
+      return item;
+    };
 
-  StorageBackedObject.prototype.get = function(key, defaultValue) {
-    if (this.object.hasOwnProperty(key)) return this.object[key];
-    if (undefined != defaultValue) {
-      this.set(key, defaultValue);
-      return defaultValue;
-    }
-    throw 'StorageBackedObject ' + this.rootKey + ' does not have property ' + key;
-  };
-  StorageBackedObject.prototype.getMany = function(keys) {
-    var values = {};
-    var self = this;
-    _.each(keys, function(key) {
-      values[key] = self.get(key);
-    })
-    return values;
-  };
-  StorageBackedObject.prototype.getObject = function() {
-    return this.object;
-  };
-  StorageBackedObject.prototype.getKeys = function() {
-    return this.keys;
-  };
-  StorageBackedObject.prototype.hasKey = function(key) {
-    return this.object.hasOwnProperty(key);
+    var populateObject = function() {
+      angular.forEach(keys, function(key) {
+        object[key] = getItemFromStorage(key);
+      });
+    };
+
+    var hasKey = function(key) {
+      return object.hasOwnProperty(key);
+    };
+
+    /* Public Methods */
+
+    this.set = function(key, value) {
+      object[key] = value;
+      saveItemToStorage(key, value);
+      saveKeys();
+    };
+
+    this.remove = function(key) {
+      delete object[key];
+      var index = keys.indexOf(key);
+      if (-1 != index) {
+        keys.splice(index, 1);
+        saveKeys();
+      }
+      removeItemFromStorage(key);
+    };
+
+    this.get = function(key, defaultValue) {
+      if (hasKey(key)) {
+        return object[key];
+      }
+      if (undefined != defaultValue) {
+        this.set(key, defaultValue);
+        return defaultValue;
+      }
+      throw 'StorageBackedObject ' + rootKey + ' does not have property ' + key;
+    };
+
+    /* Initialise by loading all items into memory */
+    populateObject();
   };
 
   return function(rootKey) {
