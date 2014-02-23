@@ -33,7 +33,7 @@ Properties
 
 Repeated calls to `get` returns the exact same value.
 
-	users.set(1234, {name: 'John Smith'});
+    users.set(1234, {name: 'John Smith'});
     users.get(1234) === users.get(1234); // True
     
 This makes it safe to repeatedly call `get` for the same key, without using more memory.
@@ -42,9 +42,9 @@ This makes it safe to repeatedly call `get` for the same key, without using more
 Under the hood
 --------------
 
-All the values are fetched from HTML5 storage when the object is created.
+All the values are fetched from HTML5 storage when the object is created. This behaviour may change in future versions.
 
-Each value of the object is stored in a separate HTML5 storage item. This avoids long json encodes / decodes when setting elements.
+Each value of the object is stored in a separate HTML5 storage item. This avoids long json encodes  when setting elements.
 
     
     
