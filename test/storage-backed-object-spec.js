@@ -86,6 +86,16 @@ describe('StorageBackedObject', function () {
         var retrieved2 = sbObject.get(testKeyWithNoValue);
         expect(retrieved2).toEqual(testValueObject);
       });
+
+      it('should allow a false default value', function() {
+        var retrieved1 = sbObject.get(testKeyWithNoValue, false);
+        expect(retrieved1).toEqual(false);     
+      })
+
+      it('should allow a null default value', function() {
+        var retrieved1 = sbObject.get(testKeyWithNoValue, null);
+        expect(retrieved1).toEqual(null);     
+      })
     })
 
     describe('remove', function() {
