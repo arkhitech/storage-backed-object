@@ -117,6 +117,24 @@ describe('StorageBackedObject', function () {
       });
     });
 
-  });
+    describe('getObject', function() {
+      it('should return an object with key and value equal to what was set', function() {
+        sbObject.set(testKey, testValueObject);
+        var object = sbObject.getObject();
+        expect(object[testKey]).toEqual(testValueObject);
+      });
 
+      it('should return the same object on each call', function() {
+        var object1 = sbObject.getObject();
+        var object2 = sbObject.getObject();
+        expect(object1 === object2);
+      });
+
+      it('should be automatically updated with later calls to set', function() {
+        var object = sbObject.getObject();
+        sbObject.set(testKey, testValueObject);
+        expect(object[testKey]).toEqual(testValueObject);
+      });
+    });
+  });
 });

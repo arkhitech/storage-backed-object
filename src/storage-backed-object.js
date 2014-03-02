@@ -89,6 +89,10 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
       throw 'StorageBackedObject ' + rootKey + ' does not have property ' + key;
     };
 
+    this.getObject = function() {
+      return object;;
+    }
+
     /* Initialise by loading all items into memory */
     populateObject();
   };
