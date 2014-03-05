@@ -82,7 +82,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
       if (hasKey(key)) {
         return object[key];
       }
-      if (undefined !== defaultValue) {
+      if (typeof defaultValue !== 'undefined') {
         this.set(key, defaultValue);
         return defaultValue;
       }
