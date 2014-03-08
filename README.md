@@ -1,4 +1,4 @@
-storage-backed-object [![Build Status](https://api.travis-ci.org/intelligentgolf/storage-backed-object.png?branch=master)](https://travis-ci.org/intelligentgolf/storage-backed-object) [![Coverage Status](https://coveralls.io/repos/intelligentgolf/storage-backed-object/badge.png?branch=master)](https://coveralls.io/r/intelligentgolf/storage-backed-object?branch=master)
+storage-backed-object [![Build Status](https://api.travis-ci.org/intelligentgolf/storage-backed-object.png?branch=master)](https://travis-ci.org/intelligentgolf/storage-backed-object) [![Coverage Status](https://coveralls.io/repos/intelligentgolf/storage-backed-object/badge.png?branch=master)](https://coveralls.io/r/intelligentgolf/storage-backed-object?branch=master) [![Code Climate](https://codeclimate.com/github/michalc/storage-backed-object.png)](https://codeclimate.com/github/michalc/storage-backed-object)
 =====================
 
 Simple AngularJS service to store an object of key/values in HTML5 storage. This can be useful when wanting to store complex data that survives browser refreshes.

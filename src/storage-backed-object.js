@@ -1,4 +1,4 @@
-'use strict';
+/*global angular */
 
 // Stores an object in HTML storage in parts
 // A single array for the keys, and separate objects for the values
@@ -6,15 +6,17 @@
 // So is useful for larger structures.
 // Object + keys is is the same instance for the lifetime of the StorageBackedObject
 angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
-.factory('StorageBackedObject', function (storage, _) {
+.factory('StorageBackedObject', function (storage) {
+  'use strict';
 
   var sbObjects = [];
 
-  function StorageBackedObject(rootKey_, storage_) {
+  function StorageBackedObject(_rootKey_, _storage_) {
+
     /* Private properties */
 
-    var rootKey = rootKey_;
-    var storage = storage_;
+    var rootKey = _rootKey_;
+    var storage = _storage_;
 
     var keys = storage.get(rootKey) || [];
     var object = {};
@@ -71,7 +73,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
     this.remove = function(key) {
       delete object[key];
       var index = keys.indexOf(key);
-      if (-1 != index) {
+      if (-1 !== index) {
         keys.splice(index, 1);
         saveKeys();
       }
@@ -90,12 +92,12 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
     };
 
     this.getObject = function() {
-      return object;;
-    }
+      return object;
+    };
 
     /* Initialise by loading all items into memory */
     populateObject();
-  };
+  }
 
   return function(rootKey) {
     return sbObjects[rootKey] || (sbObjects[rootKey] = new StorageBackedObject(rootKey, storage));

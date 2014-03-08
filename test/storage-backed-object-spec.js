@@ -1,12 +1,13 @@
-"use strict";
+/*global describe, module, it, beforeEach, afterEach, inject, expect, spyOn */
 
 describe('StorageBackedObject', function () {
+  'use strict';
 
   beforeEach(module('storage-backed-object'));
 
   var StorageBackedObject, storage, sbObject;
   var rootKey, testKey, testKeyWithNoValue;
-  var testValueArray, testValueObject;
+  var testValueObject;
 
   var html5key = function(root, key) {
     return root + '---VALUES---' + key;
@@ -27,7 +28,7 @@ describe('StorageBackedObject', function () {
     beforeEach(function() {
       sbObject1 = StorageBackedObject(rootKey);
       sbObject2 = StorageBackedObject(rootKey);
-    })
+    });
 
     it('must be the same instance for each factory call', function() {
       expect(sbObject1 === sbObject2).toBe(true);
@@ -38,7 +39,7 @@ describe('StorageBackedObject', function () {
     beforeEach(function () {
       testKey = 'test-key';
       testKeyWithNoValue = 'not-assigned-a-value';
-      testValueObject = {}; 
+      testValueObject = {};
       sbObject = StorageBackedObject(rootKey);
     });
 
@@ -46,7 +47,7 @@ describe('StorageBackedObject', function () {
       beforeEach(function() {
         spyOn(storage, 'set');
         sbObject.set(testKey, testValueObject);
-      })
+      });
 
       it('should call storage.set with ' + html5key(rootKey, testKey), function() {
         expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),testValueObject);
@@ -57,7 +58,7 @@ describe('StorageBackedObject', function () {
       beforeEach(function() {
         spyOn(storage,'get').andCallThrough();
         sbObject.set(testKey, testValueObject);
-      })
+      });
 
       afterEach(function() {
         sbObject.remove(testKeyWithNoValue);
@@ -89,19 +90,19 @@ describe('StorageBackedObject', function () {
 
       it('should allow a false default value', function() {
         var retrieved1 = sbObject.get(testKeyWithNoValue, false);
-        expect(retrieved1).toEqual(false);     
-      })
+        expect(retrieved1).toEqual(false);
+      });
 
       it('should allow a null default value', function() {
         var retrieved1 = sbObject.get(testKeyWithNoValue, null);
-        expect(retrieved1).toEqual(null);     
-      })
-    })
+        expect(retrieved1).toEqual(null);
+      });
+    });
 
     describe('remove', function() {
       beforeEach(function() {
         spyOn(storage,'remove').andCallThrough();
-      })
+      });
 
       it('should call storage.remove with ' + html5key(rootKey, testKey), function() {
         sbObject.remove(testKey);
