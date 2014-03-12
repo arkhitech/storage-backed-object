@@ -5,55 +5,63 @@
 // Means each can be edited without re-saving the entire object
 // So is useful for larger structures.
 // Object + keys is is the same instance for the lifetime of the StorageBackedObject
-angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash'])
-.factory('StorageBackedObject', function (storage) {
+angular.module('storage-backed-object',['angular-lo-dash'])
+.factory('StorageBackedObject', function ($window) {
   'use strict';
 
   var sbObjects = [];
 
-  function StorageBackedObject(_rootKey_, _storage_) {
+  function StorageBackedObject(_rootKey_) {
 
     /* Private properties */
 
     var rootKey = _rootKey_;
-    var storage = _storage_;
-
-    var keys = storage.get(rootKey) || [];
+    var storage = $window.localStorage;
     var object = {};
+    var keys;
 
     /* Private methods */
+
+    var saveToStorage = function(key, value) {
+      storage.setItem(key, angular.toJson(value));
+    };
+
+    var removeFromStorage = function(key) {
+      storage.removeItem(key);
+    }
+
+    var getFromStorage = function(key) {
+      return angular.fromJson(storage.getItem(key));
+    }
 
     var getStorageKeyForKey = function(key) {
       return rootKey + '---VALUES---' + key;
     };
 
     var saveKeys = function() {
-      storage.set(rootKey, keys);
+      storage.setItem(rootKey, angular.toJson(keys));
     };
 
-    var saveItemToStorage = function(key, value) {
+    var saveObjectItemToStorage = function(key, value) {
       var storageKey = getStorageKeyForKey(key);
       if (-1 === keys.indexOf(key)) {
         keys.push(key);
         saveKeys();
       }
-      storage.set(storageKey, angular.toJson(value));
+      storage.setItem(storageKey, angular.toJson(value));
     };
 
-    var removeItemFromStorage = function(key) {
-      var storageKey = getStorageKeyForKey(key);
-      storage.remove(storageKey);
+    var removeObjectItemFromStorage = function(key) {
+      removeFromStorage(getStorageKeyForKey(key));
     };
 
-    var getItemFromStorage = function(key) {
-      var storageKey = getStorageKeyForKey(key);
-      var item = angular.fromJson(storage.get(storageKey));
-      return item;
+    var getObjectItemFromStorage = function(key) {
+      return getFromStorage(getStorageKeyForKey(key));
     };
 
     var populateObject = function() {
       angular.forEach(keys, function(key) {
-        object[key] = getItemFromStorage(key);
+        object[key] = getObjectItemFromStorage(key);
       });
     };
 
@@ -65,7 +73,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
 
     this.set = function(key, value) {
       object[key] = value;
-      saveItemToStorage(key, value);
+      saveObjectItemToStorage(key, value);
       saveKeys();
     };
 
@@ -76,7 +84,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
         keys.splice(index, 1);
         saveKeys();
       }
-      removeItemFromStorage(key);
+      removeObjectItemFromStorage(key);
     };
 
     this.get = function(key, defaultValue) {
@@ -95,11 +103,13 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
     };
 
     /* Initialise by loading all items into memory */
+    keys = getFromStorage(rootKey) || [];
     populateObject();
+
   }
 
   return function(rootKey) {
-    return sbObjects[rootKey] || (sbObjects[rootKey] = new StorageBackedObject(rootKey, storage));
+    return sbObjects[rootKey] || (sbObjects[rootKey] = new StorageBackedObject(rootKey));
   };
 });
 
