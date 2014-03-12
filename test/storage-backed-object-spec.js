@@ -50,7 +50,7 @@ describe('StorageBackedObject', function () {
       });
 
       it('should call storage.set with ' + html5key(rootKey, testKey), function() {
-        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),testValueObject);
+        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey), angular.toJson(testValueObject));
       });
     });
 
@@ -96,6 +96,25 @@ describe('StorageBackedObject', function () {
       it('should allow a null default value', function() {
         var retrieved1 = sbObject.get(testKeyWithNoValue, null);
         expect(retrieved1).toEqual(null);
+      });
+    });
+
+    describe('set', function() {
+      var testValueObjectWithDollar, testValueObjectWithoutDollar;
+
+      beforeEach(function() {
+        spyOn(storage,'set').andCallThrough();
+        testValueObjectWithDollar = {'$test-with-dollar':'test-value1', 'test-without-dollar':'test-value2'};
+        testValueObjectWithoutDollar = {'test-without-dollar':'test-value2'};
+        sbObject.set(testKey, testValueObjectWithDollar);
+      });
+
+      it('should call storage.set with objects but with keys beggining with $ removed', function() {
+        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),angular.toJson(testValueObjectWithoutDollar));
+      });
+
+      afterEach(function() {
+        sbObject.remove(testKey);
       });
     });
 
