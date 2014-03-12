@@ -13,9 +13,9 @@ describe('StorageBackedObject', function () {
     return root + '---VALUES---' + key;
   };
 
-  beforeEach(inject(function (_StorageBackedObject_, _storage_) {
+  beforeEach(inject(function (_StorageBackedObject_, _$window_) {
     StorageBackedObject = _StorageBackedObject_;
-    storage = _storage_;
+    storage = _$window_.localStorage;
   }));
 
   beforeEach(function() {
@@ -45,18 +45,18 @@ describe('StorageBackedObject', function () {
 
     describe('set', function() {
       beforeEach(function() {
-        spyOn(storage, 'set');
+        spyOn(storage, 'setItem');
         sbObject.set(testKey, testValueObject);
       });
 
-      it('should call storage.set with ' + html5key(rootKey, testKey), function() {
-        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey), angular.toJson(testValueObject));
+      it('should call storage.setItem with ' + html5key(rootKey, testKey), function() {
+        expect(storage.setItem).toHaveBeenCalledWith(html5key(rootKey, testKey), angular.toJson(testValueObject));
       });
     });
 
     describe('get', function() {
       beforeEach(function() {
-        spyOn(storage,'get').andCallThrough();
+        spyOn(storage,'getItem').andCallThrough();
         sbObject.set(testKey, testValueObject);
       });
 
@@ -103,14 +103,14 @@ describe('StorageBackedObject', function () {
       var testValueObjectWithDollar, testValueObjectWithoutDollar;
 
       beforeEach(function() {
-        spyOn(storage,'set').andCallThrough();
+        spyOn(storage,'setItem').andCallThrough();
         testValueObjectWithDollar = {'$test-with-dollar':'test-value1', 'test-without-dollar':'test-value2'};
         testValueObjectWithoutDollar = {'test-without-dollar':'test-value2'};
         sbObject.set(testKey, testValueObjectWithDollar);
       });
 
       it('should call storage.set with objects but with keys beggining with $ removed', function() {
-        expect(storage.set).toHaveBeenCalledWith(html5key(rootKey, testKey),angular.toJson(testValueObjectWithoutDollar));
+        expect(storage.setItem).toHaveBeenCalledWith(html5key(rootKey, testKey),angular.toJson(testValueObjectWithoutDollar));
       });
 
       afterEach(function() {
@@ -120,12 +120,12 @@ describe('StorageBackedObject', function () {
 
     describe('remove', function() {
       beforeEach(function() {
-        spyOn(storage,'remove').andCallThrough();
+        spyOn(storage,'removeItem').andCallThrough();
       });
 
       it('should call storage.remove with ' + html5key(rootKey, testKey), function() {
         sbObject.remove(testKey);
-        expect(storage.remove).toHaveBeenCalledWith(html5key(rootKey, testKey));
+        expect(storage.removeItem).toHaveBeenCalledWith(html5key(rootKey, testKey));
       });
 
       it('should cause subsequent calls to get to throw an exception', function() {
