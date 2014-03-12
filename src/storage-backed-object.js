@@ -37,8 +37,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
         keys.push(key);
         saveKeys();
       }
-
-      storage.set(storageKey, value);
+      storage.set(storageKey, angular.toJson(value));
     };
 
     var removeItemFromStorage = function(key) {
@@ -48,7 +47,7 @@ angular.module('storage-backed-object',['angularLocalStorage','angular-lo-dash']
 
     var getItemFromStorage = function(key) {
       var storageKey = getStorageKeyForKey(key);
-      var item = storage.get(storageKey);
+      var item = angular.fromJson(storage.get(storageKey));
       return item;
     };
 
