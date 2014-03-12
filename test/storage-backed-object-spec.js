@@ -13,6 +13,23 @@ describe('StorageBackedObject', function () {
     return root + '---VALUES---' + key;
   };
 
+  beforeEach(module(function($provide) {
+    var mockStorage = {};
+    $provide.value('$window', {
+      localStorage: {
+        getItem: function(key) {
+          return mockStorage[key]
+        },
+        setItem: function(key, value) {
+          mockStorage.key = value;
+        },
+        removeItem: function(key) {
+          delete mockStorage.key;
+        }
+      }
+    });
+  }));
+
   beforeEach(inject(function (_StorageBackedObject_, _$window_) {
     StorageBackedObject = _StorageBackedObject_;
     storage = _$window_.localStorage;
