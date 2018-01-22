@@ -1,5 +1,6 @@
 {
   "name": "storage-backed-object",
+  "version": "0.0.10",
   "devDependencies": {
     "karma-chrome-launcher": "~0.1.2",
     "karma-html2js-preprocessor": "~0.1.0",
